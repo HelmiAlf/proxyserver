@@ -16,15 +16,20 @@ def get_user_data(snackvideo_id):
 
 def index(request):
 	# print(request.GET)
-	username, img_src, bio = get_user_data(request.GET["username"])
+	if 'username' in request.GET.keys():
 
-	response = JsonResponse({
-		"name": username,
-		"img_src": img_src,
-		"bio": bio
-		})
-	response["Access-Control-Allow-Origin"] = "*"
-	response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
-	response["Access-Control-Max-Age"] = "1000"
-	response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
-	return response
+		username, img_src, bio = get_user_data(request.GET["username"])
+
+		response = JsonResponse({
+			"name": username,
+			"img_src": img_src,
+			"bio": bio
+			})
+		response["Access-Control-Allow-Origin"] = "*"
+		response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+		response["Access-Control-Max-Age"] = "1000"
+		response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
+		return response
+
+	else:
+		return HttpResponse("use /?username=(snackvideo_id)")
