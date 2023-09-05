@@ -62,7 +62,7 @@ def topup_form(request):
 		email = request.GET["email"]
 		paket_diamond = request.GET["paket_diamond"]
 		kode_bank = request.GET["kode_bank"]
-		diamond_amount = request.GET["diamond_amount"]
+		diamond_amount = re.sub('[^0-9]', '', paket_diamond)
 		gross_profit = re.sub('[^0-9]', '', request.GET["gross_profit"])
 		admin_fee = request.GET["admin_fee"]
 
