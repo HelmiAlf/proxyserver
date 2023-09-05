@@ -1,14 +1,16 @@
 from django.http import HttpResponse, JsonResponse
 import requests
 from bs4 import BeautifulSoup
+import json
 
 
 def get_user_data(snackvideo_id):
 	req = requests.get("https://m.snackvideo.com/user/@"+snackvideo_id)
 	soup = BeautifulSoup(req.text)
-	username = soup.css.select("div.username")[0].text
-	img_src = soup.css.select(".profile .avatar img")[0]['src']
-	bio = soup.css.select("div.desc")[0].text
+	data = json.loads(soup.css.select("#Person")[0].text)
+	username = data['name']
+	img_src = data['image']
+	bio = data['description']
 
 	return username, img_src, bio
 
@@ -23,7 +25,7 @@ def index(request):
 
 			response = JsonResponse({
 				"name": username,
-				"img_src": 'img_src',
+				"img_src": img_src,
 				"bio": bio
 				})
 			response["Access-Control-Allow-Origin"] = "*"
