@@ -121,7 +121,7 @@ def send_api_to_xendit(external_id, bank_code, name, expected_amount, descriptio
 		name=name,
 		is_single_use=True, 
 		is_closed=True, 
-		expected_amount=50000
+		expected_amount=expected_amount
 	)
 
 	print(virtual_account)
