@@ -127,6 +127,3 @@ def send_api_to_xendit(external_id, bank_code, name, expected_amount, descriptio
 	print(virtual_account)
 	return virtual_account
 
-
-# if __name__ == '__main__':
-# 	send_api_to_xendit('a','a','a','a','a','a')
