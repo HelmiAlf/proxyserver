@@ -8,6 +8,7 @@ from xendit import Xendit
 
 def get_user_data(snackvideo_id):
 	req = requests.get("https://m.snackvideo.com/user/@"+snackvideo_id)
+	# print(req.text)
 	soup = BeautifulSoup(req.text)
 	data = json.loads(soup.css.select("#Person")[0].text)
 	username = data['name']
@@ -23,7 +24,6 @@ def get_user_data(snackvideo_id):
 def index(request):
 	# print(request.GET)
 	if 'username' in request.GET.keys():
-
 		try:
 			username, img_src, bio = get_user_data(request.GET["username"])
 
@@ -32,7 +32,7 @@ def index(request):
 				"img_src": img_src,
 				"bio": bio
 				}
-			return_no_cors_response(data_response)
+			return return_no_cors_response(data_response)
 
 		except Exception as e:
 			data_response = {
@@ -40,7 +40,7 @@ def index(request):
 				"img_src": 'https://cdn-icons-png.flaticon.com/512/4436/4436559.png',
 				"bio": str(e)
 				}
-			return_no_cors_response(data_response)
+			return return_no_cors_response(data_response)
 
 
 	else:
@@ -48,7 +48,7 @@ def index(request):
 
 
 def return_no_cors_response(json_data):
-	response = JsonResponse(json_data)
+	response = HttpResponse(json.dumps(json_data), content_type='application/json')
 	response["Access-Control-Allow-Origin"] = "*"
 	response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
 	response["Access-Control-Max-Age"] = "1000"
