@@ -143,8 +143,10 @@ def tes_topup_function():
 
 def doku_callback(request):
 	if request.method =='POST':
+		print(request.POST)
 		return JsonResponse(request.POST)
 
 	else:
+		print(request.GET)
 		return JsonResponse(request.GET)
 	
