@@ -142,11 +142,21 @@ def tes_topup_function():
 
 
 def doku_callback(request):
+
 	if request.method =='POST':
-		print(request.POST)
-		return JsonResponse(request.POST)
+		f = open('doku_callback.txt', 'w+', encoding="utf-8")
+		f.write(str(datetime.datetime.now())[:14]+" "+str(request.POST))
+		f.close()
+
+		f = open('doku_callback.txt', 'r', encoding="utf-8")
+		readline = f.read()
+		return HttpResponse(readline)
 
 	else:
-		print(request.GET)
-		return JsonResponse(request.GET)
-	
+		f = open('doku_callback.txt', 'w+', encoding="utf-8")
+		f.write(str(datetime.datetime.now())[:14]+" "+str(request.GET))
+		f.close()
+
+		f = open('doku_callback.txt', 'r', encoding="utf-8")
+		readline = f.read()
+		return HttpResponse(readline)
