@@ -62,6 +62,7 @@ def return_no_cors_response(json_data):
 
 def topup_form(request):
 	# http://127.0.0.1:8000/topupform/?username=alpha_real&email=helmi.alf@gmail.com&name=Helmi%20Alfarel&paket_diamond=150%20diamond&kode_bank=BNI&diamond_amount=150&gross_profit=900000&admin_fee=5000
+	# https://proxyserver-helmialf.vercel.app/topupform/?username=AAA&email=helmi.alf@gmail.com&name=tests&paket_diamond=%2710.000&kode_bank=BNI&gross_profit=Rp. 1.580.000&admin_fee=4000
 
 	webhook_url = 'https://hook.us1.make.com/kpk9v3ee2l4ovynwoc5a8g142keat6tc'
 
@@ -189,17 +190,9 @@ def doku_get_payment_url(external_id, expected_amount):
 	          "VIRTUAL_ACCOUNT_BCA",
 	          "VIRTUAL_ACCOUNT_BANK_MANDIRI",
 	          "VIRTUAL_ACCOUNT_BANK_SYARIAH_MANDIRI",
-	          "VIRTUAL_ACCOUNT_DOKU",
 	          "VIRTUAL_ACCOUNT_BRI",
 	          "VIRTUAL_ACCOUNT_BNI",
 	          "VIRTUAL_ACCOUNT_BANK_PERMATA",
-	          "VIRTUAL_ACCOUNT_BANK_CIMB",
-	          "VIRTUAL_ACCOUNT_BANK_DANAMON",
-	          "ONLINE_TO_OFFLINE_ALFA",
-	          "CREDIT_CARD",
-	          "EMONEY_SHOPEEPAY",
-	          "EMONEY_OVO",
-	          "QRIS"      
 	          ]
 	    }
 	}
