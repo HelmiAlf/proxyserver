@@ -1,10 +1,15 @@
-from django.http import HttpResponse, JsonResponse
-import requests
 from bs4 import BeautifulSoup
-import json
-import datetime
-import re
+from django.http import HttpResponse, JsonResponse
 from xendit import Xendit
+import base64
+import datetime
+import hashlib
+import hmac
+import json
+import random
+import re
+import requests
+
 
 def get_user_data(snackvideo_id):
 	req = requests.get("https://m.snackvideo.com/user/@"+snackvideo_id)
@@ -103,17 +108,15 @@ def topup_form(request):
 
 			req = requests.post(webhook_url, data=json.dumps(data), headers={'Content-type': 'application/json'})
 
-			xendit_call = send_api_to_xendit(transaction_id, kode_bank, name, expected_amount_paid, description)
-
-			virtual_account = json.loads(str(xendit_call))
-
-			return return_no_cors_response(virtual_account)
+			doku_call = doku_get_payment_url(transaction_id, expected_amount_paid)
+			return return_no_cors_response(doku_call)
 			
 
 		else:
 			return return_no_cors_response({'Error Message':"Wrong Message"})
 	
 	except Exception as e:
+		print(e)
 		return return_no_cors_response({'Error Message':e})
 
 
@@ -140,23 +143,78 @@ def tes_topup_function():
 	data = {"owner_id": "60ff6cf2dd93806c99a10ca5", "external_id": "TW_AAA_20230909234945", "account_number": "8808487689553918", "bank_code": "BNI", "merchant_code": "8808", "name": "XDT-tests", "is_closed": true, "expected_amount": 1584000, "is_single_use": true, "status": "PENDING", "currency": "IDR", "country": "ID", "expiration_date": "2054-09-09T17:00:00.000Z", "id": "64fd049a3dd020347dba3cfe"}
 	return return_no_cors_response(data)
 
+# Start Doku Gateway
+def generateDigest(jsonBody):  
+    return base64.b64encode(hashlib.sha256(jsonBody.encode('utf-8')).digest()).decode("utf-8")
 
-def doku_callback(request):
+def generateSignature(clientId, requestId, requestTimestamp, requestTarget, digest, secret):
+    componentSignature = "Client-Id:" + clientId
+    componentSignature += "\n"
+    componentSignature += "Request-Id:" + requestId
+    componentSignature += "\n"
+    componentSignature += "Request-Timestamp:" + requestTimestamp
+    componentSignature += "\n"
+    componentSignature += "Request-Target:" + requestTarget
+    # If body not send when access API with HTTP method GET/DELETE
+    if digest:  
+        componentSignature += "\n"
+        componentSignature += "Digest:" + digest
+     
+    message = bytes(componentSignature, 'utf-8')
+    secret = bytes(secret, 'utf-8')
+ 
+    # Calculate HMAC-SHA256 base64 from all the components above
+    signature = base64.b64encode(hmac.new(secret, message, digestmod=hashlib.sha256).digest()).decode("utf-8")
 
-	if request.method =='POST':
-		f = open('doku_callback.txt', 'w+', encoding="utf-8")
-		f.write(str(datetime.datetime.now())[:14]+" "+str(request.POST))
-		f.close()
+    # Prepend encoded result with algorithm info HMACSHA256=
+    return "HMACSHA256="+signature 
 
-		f = open('doku_callback.txt', 'r', encoding="utf-8")
-		readline = f.read()
-		return HttpResponse(readline)
+def doku_get_payment_url(external_id, expected_amount):
+	client_id = "BRN-0253-1694683188850" # Ganti dengan yg asli
+	secret_key = "SK-rqjzJuquACM4Q4owkv9Q" # Ganti dengan yg asli
+	endpoint = "https://api-sandbox.doku.com/checkout/v1/payment" # Ganti dengan yg asli
 
-	else:
-		f = open('doku_callback.txt', 'w+', encoding="utf-8")
-		f.write(str(datetime.datetime.now())[:14]+" "+str(request.GET))
-		f.close()
+	request_id = external_id
+	request_timestamp = str(datetime.datetime.now(datetime.timezone.utc).isoformat()[:19]+"Z")
+	invoice_number = external_id
 
-		f = open('doku_callback.txt', 'r', encoding="utf-8")
-		readline = f.read()
-		return HttpResponse(readline)
+	body = {
+	    "order": {
+	        "amount": expected_amount,
+	        "invoice_number": invoice_number
+	    },
+	    "payment": {
+	        "payment_due_date": 60,
+	        "payment_method_types": [
+	          "VIRTUAL_ACCOUNT_BCA",
+	          "VIRTUAL_ACCOUNT_BANK_MANDIRI",
+	          "VIRTUAL_ACCOUNT_BANK_SYARIAH_MANDIRI",
+	          "VIRTUAL_ACCOUNT_DOKU",
+	          "VIRTUAL_ACCOUNT_BRI",
+	          "VIRTUAL_ACCOUNT_BNI",
+	          "VIRTUAL_ACCOUNT_BANK_PERMATA",
+	          "VIRTUAL_ACCOUNT_BANK_CIMB",
+	          "VIRTUAL_ACCOUNT_BANK_DANAMON",
+	          "ONLINE_TO_OFFLINE_ALFA",
+	          "CREDIT_CARD",
+	          "EMONEY_SHOPEEPAY",
+	          "EMONEY_OVO",
+	          "QRIS"      
+	          ]
+	    }
+	}
+
+	jsonBody = json.dumps(body)
+	digest = generateDigest(jsonBody)
+
+	headerSignature = generateSignature(client_id, request_id, request_timestamp, "/checkout/v1/payment", digest, secret_key)
+
+	headers = {
+	  "Client-Id": client_id,
+	  "Request-Id": request_id,
+	  "Request-Timestamp": request_timestamp,
+	  "Signature": headerSignature
+	}
+
+	response = requests.post(endpoint, headers=headers, json=body)
+	return response.json()
