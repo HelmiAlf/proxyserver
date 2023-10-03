@@ -77,12 +77,10 @@ def topup_form(request):
 			name = re.sub('[^a-zA-Z]', '', request.GET["name"])
 			paket_diamond = request.GET["paket_diamond"]
 			kode_bank = request.GET["kode_bank"].upper()
+			diamond_amount = request.GET["diamond_amount"]
 			gross_profit = re.sub('[^0-9]', '', request.GET["gross_profit"])
 			admin_fee = request.GET["admin_fee"]
 
-			diamond_amount = re.sub('[^0-9]', '', paket_diamond)
-			promo = re.sub('[^0-9]', '', paket_diamond)
-			diamond_amount = int(diamond_amount) + int(promo)
 
 			timestamp_clean = re.sub('[^a-zA-Z0-9]', '', str(datetime.datetime.now()))[:14]
 			date_today = str(datetime.date.today())
