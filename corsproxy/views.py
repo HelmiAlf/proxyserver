@@ -171,9 +171,9 @@ def generateSignature(clientId, requestId, requestTimestamp, requestTarget, dige
     return "HMACSHA256="+signature 
 
 def doku_get_payment_url(external_id, expected_amount):
-	client_id = "BRN-0253-1694683188850" # Ganti dengan yg asli
-	secret_key = "SK-rqjzJuquACM4Q4owkv9Q" # Ganti dengan yg asli
-	endpoint = "https://api-sandbox.doku.com/checkout/v1/payment" # Ganti dengan yg asli
+	client_id = "BRN-0216-1695707074316" # Sudah Ganti dengan yg asli
+	secret_key = "SK-HiqxeU7rpRKAVxvNZqjk" # Sudah Ganti dengan yg asli
+	endpoint = "https://api.doku.com/checkout/v1/payment" # Sudah Ganti dengan yg asli
 
 	request_id = external_id
 	request_timestamp = str(datetime.datetime.now(datetime.timezone.utc).isoformat()[:19]+"Z")
