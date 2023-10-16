@@ -190,9 +190,12 @@ def doku_get_payment_url(external_id, expected_amount):
 	          "VIRTUAL_ACCOUNT_BCA",
 	          "VIRTUAL_ACCOUNT_BANK_MANDIRI",
 	          "VIRTUAL_ACCOUNT_BANK_SYARIAH_MANDIRI",
+	          "VIRTUAL_ACCOUNT_DOKU",
 	          "VIRTUAL_ACCOUNT_BRI",
 	          "VIRTUAL_ACCOUNT_BNI",
 	          "VIRTUAL_ACCOUNT_BANK_PERMATA",
+	          "VIRTUAL_ACCOUNT_BANK_CIMB",
+	          "VIRTUAL_ACCOUNT_BANK_DANAMON",
 	          ]
 	    }
 	}
