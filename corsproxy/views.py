@@ -15,7 +15,7 @@ def get_user_data(snackvideo_id):
 	req = requests.get("https://m.snackvideo.com/user/@"+snackvideo_id)
 	# print(req.text)
 	soup = BeautifulSoup(req.text)
-	data = json.loads(soup.css.select("#Person")[0].text)
+	data = json.loads(html.unescape(soup.css.select("#Person")[0].text))
 	username = data['name']
 	img_src = data['image']
 	bio = data['description']
