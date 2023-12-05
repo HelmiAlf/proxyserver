@@ -9,6 +9,7 @@ import json
 import random
 import re
 import requests
+import html
 
 
 def get_user_data(snackvideo_id):
