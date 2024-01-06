@@ -76,6 +76,7 @@ def topup_form(request):
 			username = request.GET["username"]
 			email = request.GET["email"]
 			name = re.sub('[^a-zA-Z]', '', request.GET["name"])
+			whatsapp = request.GET["whatsapp"]
 			paket_diamond = request.GET["paket_diamond"]
 			kode_bank = request.GET["kode_bank"].upper()
 			diamond_amount = request.GET["diamond_amount"]
@@ -97,6 +98,7 @@ def topup_form(request):
 				'Snack Video ID': username,
 				'Email': email,
 				'Name' : name,
+				'Whatsapp': whatsapp,
 				'Package': paket_diamond,
 				'Diamond Amount': diamond_amount,
 				'Gross Profit': gross_profit,
